@@ -154,6 +154,9 @@ const actions = {
           user
         });
       });
+  },
+  getMessagesAction({ state }, id) {
+    console.log("user id", id);
   }
 };
 

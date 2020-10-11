@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -65,6 +66,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions("auth", ["getMessagesAction"]),
     sendMessage() {
       this.messages.push({
         text: this.newMessage,
@@ -72,6 +74,9 @@ export default {
       });
       this.newMessage = "";
     }
+  },
+  mounted() {
+    this.getMessagesAction(this.$route.params.id);
   }
 };
 </script>
