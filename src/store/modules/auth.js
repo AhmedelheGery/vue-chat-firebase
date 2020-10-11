@@ -1,24 +1,43 @@
+import Vue from "vue";
 import firebase from "firebase/app";
-import router from "../../router";
 
-// types
-const SET_USER = "SET_USER";
-const SET_ERROR = "SET_ERROR";
-
-// state
-const initialState = () => {
-  return { user: null, error: null };
+const state = {
+  user: {},
+  error: {},
+  users: {}
 };
 
 const getters = {
-  getUser(state) {
-    return state.user;
+  getUsers(state) {
+    let usersFiltered = {};
+    Object.keys(state.users).forEach(key => {
+      if (key !== state.user.userId) {
+        usersFiltered[key] = state.users[key];
+      }
+    });
+    return usersFiltered;
   },
   isUserAuth(state) {
     return !!state.user;
   },
   getError(state) {
     return state.error;
+  }
+};
+
+// mutations
+const mutations = {
+  setUser(state, payload) {
+    state.user = payload;
+  },
+  addUser(state, payload) {
+    Vue.set(state.users, payload.userId, payload.users);
+  },
+  updateUser(state, payload) {
+    Object.assign(state.users[payload.userId], payload.user);
+  },
+  SET_ERROR(state, payload) {
+    state.error = payload;
   }
 };
 
@@ -29,12 +48,20 @@ const actions = {
       .auth()
       .createUserWithEmailAndPassword(payload.email, payload.password)
       .then(response => {
-        // @TODO mutate user state.
-        commit(SET_USER, response.user);
+        let userId = firebase.auth().currentUser.uid;
+        const rootRef = firebase
+          .database()
+          .ref(`users/${userId}`)
+          .set({
+            name: payload.name,
+            email: payload.email,
+            online: true
+          });
+        this.$router.push("/");
+        return rootRef;
       })
       .catch(error => {
-        // @TODO mutate error state.
-        commit(SET_ERROR, error.message);
+        commit("SET_ERROR", error.message);
       });
   },
   signInAction({ commit }, payload) {
@@ -42,11 +69,10 @@ const actions = {
       .auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(response => {
-        commit(SET_USER, response.user);
-        router.push("/");
+        this.$router.push("/");
       })
       .catch(error => {
-        commit(SET_ERROR, error.message);
+        commit("SET_ERROR", error.message);
       });
   },
   signOutAction({ commit }) {
@@ -54,37 +80,86 @@ const actions = {
       .auth()
       .signOut()
       .then(() => {
-        commit(SET_USER, null);
-        router.push("/login");
+        this.$router.push("/auth");
       })
       .catch(error => {
-        commit(SET_ERROR, error.message);
+        commit("SET_ERROR", error.message);
       });
   },
-  authAction({ commit }) {
+  authAction({ commit, dispatch, state }) {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        commit(SET_USER, user);
+        // user logged in
+        let userId = firebase.auth().currentUser.uid;
+        firebase
+          .database()
+          .ref(`users/${userId}`)
+          .once("value", snapshot => {
+            let userData = snapshot.val();
+            commit("setUser", {
+              name: userData.name,
+              email: userData.email,
+              userId
+            });
+          });
+        // update user state at firebase
+        dispatch("firebaseUpdateUserAction", {
+          userId,
+          updates: {
+            online: true
+          }
+        });
+        dispatch("getUsersAction");
       } else {
-        commit(SET_USER, null);
+        // user logged out
+        dispatch("firebaseUpdateUserAction", {
+          userId: state.user.userId,
+          updates: {
+            online: false
+          }
+        });
+        commit("setUser", {});
       }
     });
-  }
-};
-
-// mutations
-const mutations = {
-  SET_USER(state, payload) {
-    state.user = payload;
   },
-  SET_ERROR(state, payload) {
-    state.error = payload;
+  firebaseUpdateUserAction({ state }, payload) {
+    payload.userId &&
+      firebase
+        .database()
+        .ref(`users/${payload.userId}`)
+        .update(payload.updates);
+  },
+  getUsersAction({ commit }) {
+    // user added
+    firebase
+      .database()
+      .ref(`users`)
+      .on("child_added", snapshot => {
+        let users = snapshot.val();
+        let userId = snapshot.key;
+        commit("addUser", {
+          userId,
+          users
+        });
+      });
+    // user updated
+    firebase
+      .database()
+      .ref(`users`)
+      .on("child_changed", snapshot => {
+        let user = snapshot.val();
+        let userId = snapshot.key;
+        commit("updateUser", {
+          userId,
+          user
+        });
+      });
   }
 };
 
 export default {
   namespaced: true,
-  state: initialState,
+  state,
   getters,
   mutations,
   actions

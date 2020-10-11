@@ -6,7 +6,7 @@
       class="q-mb-md"
       color="teal"
       outlined
-      v-model="formData.userName"
+      v-model="formData.name"
       label="User name"
     >
       <template v-slot:append>
@@ -46,14 +46,14 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
       formData: {
         email: "",
         password: "",
-        userName: ""
+        name: ""
       }
     };
   },
@@ -71,13 +71,13 @@ export default {
         : ((formData = {
             email: this.formData.email,
             password: this.formData.password,
-            userName: this.formData.userName
+            name: this.formData.name
           }),
           this.signUpAction(formData));
     }
-  },
-  computed: {
-    ...mapGetters("auth", ["isUserAuth"])
   }
+  // computed: {
+  //   ...mapGetters("auth", ["isUserAuth"])
+  // }
 };
 </script>

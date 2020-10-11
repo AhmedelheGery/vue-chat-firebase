@@ -2,8 +2,8 @@
   <q-page class="flex flex-center">
     <q-list class="full-width" separator>
       <q-item
-        v-for="user in users"
-        :key="user.id"
+        v-for="(user, i) in getUsers"
+        :key="i"
         class="q-my-sm"
         clickable
         v-ripple
@@ -29,36 +29,10 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  data() {
-    return {
-      users: [
-        {
-          id: 1,
-          name: "Ahmed",
-          letter: "A",
-          online: false
-        },
-        {
-          id: 2,
-          name: "Marim",
-          letter: "M",
-          online: true
-        },
-        {
-          id: 3,
-          name: "Enas",
-          letter: "E",
-          online: false
-        },
-        {
-          id: 4,
-          name: "Yossef",
-          letter: "Y",
-          online: true
-        }
-      ]
-    };
+  computed: {
+    ...mapGetters("auth", ["getUsers"])
   }
 };
 </script>

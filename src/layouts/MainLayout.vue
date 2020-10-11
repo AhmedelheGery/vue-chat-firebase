@@ -20,7 +20,8 @@
           label="Logout"
           color="secondary"
           no-caps
-          v-if="status"
+          v-if="user.userId"
+          @click="logout"
         />
         <q-btn
           to="/auth"
@@ -40,18 +41,21 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 export default {
   name: "MainLayout",
-  data() {
-    return {
-      status: false
-    };
-  },
   computed: {
+    ...mapState("auth", ["user"]),
     checkTitle() {
       if (this.$route.path == "/auth") return "Auth";
       else if (this.$route.path == "/chat") return "Chat";
       return "NamiChat";
+    }
+  },
+  methods: {
+    ...mapActions("auth", ["signOutAction"]),
+    logout() {
+      this.signOutAction();
     }
   }
 };
