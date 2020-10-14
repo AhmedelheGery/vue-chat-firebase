@@ -42,13 +42,16 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import mixinOtherUserData from "../mixins/mixin-other-user-info";
+
 export default {
+  mixins: [mixinOtherUserData],
   name: "MainLayout",
   computed: {
     ...mapState("auth", ["user"]),
     checkTitle() {
       if (this.$route.path == "/auth") return "Auth";
-      else if (this.$route.path == "/chat") return "Chat";
+      else if (this.$route.path.includes("chat")) return this.otherUserDetails.name;
       return "NamiChat";
     }
   },

@@ -1,10 +1,13 @@
 import Vue from "vue";
 import firebase from "firebase/app";
 
+let messagesRef;
+
 const state = {
   user: {},
   error: {},
-  users: {}
+  users: {},
+  messages: {}
 };
 
 const getters = {
@@ -35,6 +38,12 @@ const mutations = {
   },
   updateUser(state, payload) {
     Object.assign(state.users[payload.userId], payload.user);
+  },
+  addMessage(state, payload) {
+    Vue.set(state.messages, payload.messageId, payload.message);
+  },
+  clearMessages(state) {
+    state.messages = {};
   },
   SET_ERROR(state, payload) {
     state.error = payload;
@@ -155,8 +164,20 @@ const actions = {
         });
       });
   },
-  getMessagesAction({ state }, id) {
-    console.log("user id", id);
+  getMessagesAction({ commit, state }, id) {
+    let myId = state.user.userId;
+    messagesRef = firebase.database().ref(`chats/${myId}/${id}`);
+    messagesRef.on("child_added", snapshot => {
+      let message = snapshot.val();
+      let messageId = snapshot.key;
+      commit("addMessage", {
+        message,
+        messageId
+      });
+    });
+  },
+  leaveChatAction({ commit }) {
+    messagesRef && (messagesRef.off("child_added"), commit("clearMessages"));
   }
 };
 

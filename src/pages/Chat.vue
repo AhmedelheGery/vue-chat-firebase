@@ -1,12 +1,18 @@
 <template>
   <q-page class="flex column">
-    <q-banner inline-actions class="bg-grey-2 text-center">
-      User is offline.
+    <q-banner
+      v-if="otherUserDetails && !otherUserDetails.online"
+      inline-actions
+      class="bg-grey-2 text-center"
+    >
+      {{ otherUserDetails && otherUserDetails.name }} is offline.
     </q-banner>
     <div class="q-pa-md column col justify-end">
       <q-chat-message
         v-for="(message, i) in messages"
-        :name="message.from"
+        :name="
+          message.from == 'me' ? '' : otherUserDetails && otherUserDetails.name
+        "
         :key="i"
         :text="[message.text]"
         :sent="message.from == 'me'"
@@ -44,29 +50,23 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
+import mixinOtherUserData from "../mixins/mixin-other-user-info";
 export default {
+  mixins: [mixinOtherUserData],
   data() {
     return {
-      newMessage: "",
-      messages: [
-        {
-          text: "how are you?",
-          from: "me"
-        },
-        {
-          text: "fine you?",
-          from: "them"
-        },
-        {
-          text: "cool",
-          from: "me"
-        }
-      ]
+      newMessage: ""
     };
   },
+  computed: {
+    ...mapState("auth", ["messages", "user", "users"]),
+    userData() {
+      return this.otherUserDetails;
+    }
+  },
   methods: {
-    ...mapActions("auth", ["getMessagesAction"]),
+    ...mapActions("auth", ["getMessagesAction", "leaveChatAction"]),
     sendMessage() {
       this.messages.push({
         text: this.newMessage,
@@ -77,6 +77,9 @@ export default {
   },
   mounted() {
     this.getMessagesAction(this.$route.params.id);
+  },
+  destroyed() {
+    this.leaveChatAction();
   }
 };
 </script>
