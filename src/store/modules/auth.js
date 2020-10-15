@@ -176,6 +176,12 @@ const actions = {
       });
     });
   },
+  sendMessageAction({ state }, payload) {
+    let myId = state.user.userId;
+    firebase.database().ref(`chats/${myId}/${payload.otherUserId}`).push(payload.message);
+    payload.message.from = 'them'
+    firebase.database().ref(`chats/${payload.otherUserId}/${myId}`).push(payload.message);
+  },
   leaveChatAction({ commit }) {
     messagesRef && (messagesRef.off("child_added"), commit("clearMessages"));
   }

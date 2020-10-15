@@ -56,31 +56,35 @@ export default {
   mixins: [mixinOtherUserData],
   data() {
     return {
-      newMessage: ""
+      newMessage: "",
     };
   },
   computed: {
     ...mapState("auth", ["messages", "user", "users"]),
     userData() {
       return this.otherUserDetails;
-    }
+    },
   },
   methods: {
-    ...mapActions("auth", ["getMessagesAction", "leaveChatAction"]),
+    ...mapActions("auth", [
+      "getMessagesAction",
+      "leaveChatAction",
+      "sendMessageAction",
+    ]),
     sendMessage() {
-      this.messages.push({
-        text: this.newMessage,
-        from: "me"
+      this.sendMessageAction({
+        message: { text: this.newMessage, from: "me" },
+        otherUserId: this.$route.params.id,
       });
       this.newMessage = "";
-    }
+    },
   },
   mounted() {
     this.getMessagesAction(this.$route.params.id);
   },
   destroyed() {
     this.leaveChatAction();
-  }
+  },
 };
 </script>
 

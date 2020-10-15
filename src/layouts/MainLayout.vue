@@ -51,7 +51,8 @@ export default {
     ...mapState("auth", ["user"]),
     checkTitle() {
       if (this.$route.path == "/auth") return "Auth";
-      else if (this.$route.path.includes("chat")) return this.otherUserDetails.name;
+      else if (this.$route.path.includes("chat"))
+        return this.otherUserDetails && this.otherUserDetails.name;
       return "NamiChat";
     }
   },

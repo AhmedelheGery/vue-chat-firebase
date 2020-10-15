@@ -1,7 +1,7 @@
 export default {
   computed: {
     otherUserDetails() {
-      return this.$store.state.auth.users[this.$route.params.id];
+      return this.$store.state.auth.users&&this.$store.state.auth.users[this.$route.params.id];
     }
   }
 };
