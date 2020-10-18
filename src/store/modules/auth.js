@@ -78,7 +78,7 @@ const actions = {
       .auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(response => {
-        this.$router.push("/");
+        this.$router.push("/users");
       })
       .catch(error => {
         commit("SET_ERROR", error.message);
@@ -178,9 +178,15 @@ const actions = {
   },
   sendMessageAction({ state }, payload) {
     let myId = state.user.userId;
-    firebase.database().ref(`chats/${myId}/${payload.otherUserId}`).push(payload.message);
-    payload.message.from = 'them'
-    firebase.database().ref(`chats/${payload.otherUserId}/${myId}`).push(payload.message);
+    firebase
+      .database()
+      .ref(`chats/${myId}/${payload.otherUserId}`)
+      .push(payload.message);
+    payload.message.from = "them";
+    firebase
+      .database()
+      .ref(`chats/${payload.otherUserId}/${myId}`)
+      .push(payload.message);
   },
   leaveChatAction({ commit }) {
     messagesRef && (messagesRef.off("child_added"), commit("clearMessages"));
