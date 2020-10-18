@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex column">
+  <q-page class="flex column" ref="pageChat">
     <q-banner
       v-if="otherUserDetails && !otherUserDetails.online"
       inline-actions
@@ -24,6 +24,7 @@
           <q-input
             outlined
             v-model="newMessage"
+            ref="newMessage"
             label="Message"
             dense
             bg-color="white"
@@ -56,35 +57,47 @@ export default {
   mixins: [mixinOtherUserData],
   data() {
     return {
-      newMessage: "",
+      newMessage: ""
     };
   },
   computed: {
     ...mapState("auth", ["messages", "user", "users"]),
     userData() {
       return this.otherUserDetails;
-    },
+    }
   },
   methods: {
     ...mapActions("auth", [
       "getMessagesAction",
       "leaveChatAction",
-      "sendMessageAction",
+      "sendMessageAction"
     ]),
     sendMessage() {
       this.sendMessageAction({
         message: { text: this.newMessage, from: "me" },
-        otherUserId: this.$route.params.id,
+        otherUserId: this.$route.params.id
       });
       this.newMessage = "";
+      this.$refs.newMessage.focus();
     },
+    scrollToBottom() {
+      let pageChat = this.$refs.pageChat.$el;
+      setTimeout(() => {
+        window.scrollTo(0, pageChat.scrollHeight);
+      }, 20);
+    }
+  },
+  watch: {
+    messages(val) {
+      Object.keys(val).length && this.scrollToBottom();
+    }
   },
   mounted() {
     this.getMessagesAction(this.$route.params.id);
   },
   destroyed() {
     this.leaveChatAction();
-  },
+  }
 };
 </script>
 
