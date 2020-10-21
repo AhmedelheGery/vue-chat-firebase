@@ -21,7 +21,7 @@ const getters = {
     return usersFiltered;
   },
   isUserAuth(state) {
-    return !!state.user;
+    return Object.keys(state.user).length;
   },
   getError(state) {
     return state.error;
@@ -78,7 +78,7 @@ const actions = {
       .auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(response => {
-        this.$router.push("/users");
+        this.$router.push("/");
       })
       .catch(error => {
         commit("SET_ERROR", error.message);
@@ -89,7 +89,7 @@ const actions = {
       .auth()
       .signOut()
       .then(() => {
-        this.$router.push("/auth");
+        this.$router.push("/");
       })
       .catch(error => {
         commit("SET_ERROR", error.message);

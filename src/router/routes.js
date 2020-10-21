@@ -8,7 +8,6 @@ const routes = [
         component: () => import("layouts/MainLayout.vue"),
         children: [{ path: "", component: () => import("pages/Home.vue") }]
       },
-      { path: "/users", component: () => import("pages/Users.vue") },
       { path: "/auth", component: () => import("pages/Auth.vue") },
       { path: "/chat/:id", component: () => import("pages/Chat.vue") }
     ]
