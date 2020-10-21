@@ -4,7 +4,7 @@
     <q-input
       v-if="tab == 'register'"
       class="q-mb-md"
-      color="teal"
+      color="secondary"
       outlined
       v-model="formData.name"
       label="User name"
@@ -16,7 +16,7 @@
     <!-- email -->
     <q-input
       class="q-mb-md"
-      color="teal"
+      color="secondary"
       type="email"
       outlined
       v-model="formData.email"
@@ -29,7 +29,7 @@
     <!-- password -->
     <q-input
       class="q-mb-md"
-      color="teal"
+      color="secondary"
       type="password"
       outlined
       v-model="formData.password"
@@ -40,7 +40,7 @@
       </template>
     </q-input>
     <div class="text-right">
-      <q-btn color="primary" :label="tab" type="submit" />
+      <q-btn color="secondary" :label="tab" type="submit" />
     </div>
   </q-form>
 </template>

@@ -16,10 +16,13 @@
         :key="i"
         :text="[message.text]"
         :sent="message.from == 'me'"
+        :bg-color="message.from == 'me' ? 'secondary' : 'grey-4'"
+        :text-color="message.from == 'me' ? 'white' : 'dark'"
+
       />
     </div>
     <q-footer elevated>
-      <q-toolbar>
+      <q-toolbar class="gradient-bg">
         <q-form @submit="sendMessage" class="full-width">
           <q-input
             outlined
@@ -41,7 +44,9 @@
                 color="white"
                 type="submit"
                 @click="sendMessage"
+                :disable="disableCheck"
               />
+              <!-- {{disableBtn}} -->
             </template>
           </q-input>
         </q-form>
@@ -64,6 +69,9 @@ export default {
     ...mapState("auth", ["messages", "user", "users"]),
     userData() {
       return this.otherUserDetails;
+    },
+    disableCheck(){
+      return (this.newMessage.length === 0 || !this.newMessage.trim()) ? true : false
     }
   },
   methods: {
@@ -100,5 +108,3 @@ export default {
   }
 };
 </script>
-
-<style lang="sass" scoped></style>

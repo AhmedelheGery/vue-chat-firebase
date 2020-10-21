@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar class="flex justify-around container">
+      <q-toolbar class="flex justify-around container gradient-bg">
         <q-btn
           v-if="this.$route.path.includes('chat')"
           v-go-back.single
@@ -50,7 +50,7 @@ export default {
   computed: {
     ...mapState("auth", ["user"]),
     checkTitle() {
-      if (this.$route.path == "/auth") return "Auth";
+      if (this.$route.path == "/auth") return "";
       else if (this.$route.path.includes("chat"))
         return this.otherUserDetails && this.otherUserDetails.name;
       return "NamiChat";
