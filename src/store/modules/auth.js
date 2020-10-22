@@ -24,7 +24,7 @@ const getters = {
     return Object.keys(state.user).length;
   },
   getError(state) {
-    return state.error;
+    return Object.keys(state.error).length&&state.error;
   }
 };
 
@@ -45,8 +45,11 @@ const mutations = {
   clearMessages(state) {
     state.messages = {};
   },
-  SET_ERROR(state, payload) {
+  setError(state, payload) {
     state.error = payload;
+  },
+  clearErrors(state) {
+    state.error = {};
   }
 };
 
@@ -70,7 +73,7 @@ const actions = {
         return rootRef;
       })
       .catch(error => {
-        commit("SET_ERROR", error.message);
+        commit("setError", error.message);
       });
   },
   signInAction({ commit }, payload) {
@@ -81,7 +84,7 @@ const actions = {
         this.$router.push("/");
       })
       .catch(error => {
-        commit("SET_ERROR", error.message);
+        commit("setError", error.message);
       });
   },
   signOutAction({ commit }) {
@@ -92,7 +95,7 @@ const actions = {
         this.$router.push("/");
       })
       .catch(error => {
-        commit("SET_ERROR", error.message);
+        commit("setError", error.message);
       });
   },
   authAction({ commit, dispatch, state }) {
@@ -190,7 +193,10 @@ const actions = {
   },
   leaveChatAction({ commit }) {
     messagesRef && (messagesRef.off("child_added"), commit("clearMessages"));
-  }
+  },
+  clearErrAction({ commit }) {
+    commit("clearErrors");
+  },
 };
 
 export default {

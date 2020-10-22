@@ -44,6 +44,6 @@ export default {
 <style scoped>
 .q-item {
   color: #fff;
-  background-color: rgba(219, 93, 106, 0.2);
+  background-color: rgba(219, 93, 106, 0.1);
 }
 </style>

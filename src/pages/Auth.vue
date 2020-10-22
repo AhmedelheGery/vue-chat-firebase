@@ -5,7 +5,7 @@
         v-model="tab"
         dense
         class="text-grey"
-        active-color="secondary"
+        active-color="primary"
         indicator-color="secondary"
         align="justify"
         narrow-indicator
