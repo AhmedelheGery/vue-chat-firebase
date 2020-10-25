@@ -1,9 +1,6 @@
 <template>
   <q-page class="main-bg">
-    <div class="row items-center fit" v-if="isUserAuth == 0">
-      <div class="col-sm-4 col-md-6 flex flex-center hello-animation q-pt-sm">
-        <lottie :options="defaultOptions" />
-      </div>
+    <div class="row items-center fit justify-center" v-if="isUserAuth == 0">
       <div class="col-sm-4 col-md-6 text-center">
         <h2 class="title" color="white">Let's Login to Chat!</h2>
         <q-btn
@@ -11,12 +8,16 @@
           icon-right="account_circle"
           label="Login"
           class="btn-bg"
-          size="22px"
+          size="18px"
           no-caps
         />
       </div>
+      <div class="col-sm-4 col-md-6 flex flex-center hello-animation q-pt-sm">
+        <lottie :options="defaultOptions" :width="500" />
+      </div>
     </div>
-    <Users v-else />
+    <div v-else>
+    <Users />
     <q-footer elevated>
       <q-toolbar class="gradient-bg flex text-center">
         <q-toolbar-title
@@ -27,6 +28,7 @@
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
+    </div>
   </q-page>
 </template>
 

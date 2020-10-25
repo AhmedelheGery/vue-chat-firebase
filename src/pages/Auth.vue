@@ -23,15 +23,6 @@
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
-    <q-footer elevated>
-      <q-toolbar class="gradient-bg flex text-center">
-        <q-toolbar-title
-          >Made by :
-          <a class="github-url" href="https://github.com/AhmedelheGery" target="_blink">
-            Ahmed Alaa - Frontend Engineer
-          </a>
-        </q-toolbar-title>      </q-toolbar>
-    </q-footer>
   </q-page>
 </template>
 

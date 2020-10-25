@@ -3,11 +3,11 @@
     <q-banner
       v-if="otherUserDetails && !otherUserDetails.online"
       inline-actions
-      class="bg-grey-2 text-center"
+      class="bg-grey-2 text-center fixed-top chat-banner full-width"
     >
       {{ otherUserDetails && otherUserDetails.name }} is offline.
     </q-banner>
-    <div class="q-pa-md column col justify-end">
+    <div class="q-pa-md column col justify-end chat-wrapper">
       <q-chat-message
         v-for="(message, i) in messages"
         :name="
@@ -108,3 +108,12 @@ export default {
   }
 };
 </script>
+<style scoped>
+.chat-wrapper,body{
+  background-color: #fff !important;
+}
+.chat-banner{
+  padding-top: 70px;
+}
+
+</style>

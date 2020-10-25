@@ -12,7 +12,7 @@
       >
         <q-item-section avatar>
           <q-avatar class="btn-bg" text-color="white">
-            {{ user.name.charAt(0) }}
+            {{ user && user.name && user.name.charAt(0) }}
           </q-avatar>
         </q-item-section>
         <q-item-section>
